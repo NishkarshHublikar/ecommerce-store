@@ -1,9 +1,10 @@
-export default function Products(){
+import ProductCard from "@/components/ProductCard";
+export default function ProductsPage(){
     return(
-        <main className ="p-10">
-            <h1 className = "text-4xl font-bold">
-                Products
-            </h1>
-        </main>
+        <div className ="p-10 grid grid-cols-3 gap-6">
+            <ProductCard />
+            <ProductCard />
+            <ProductCard />
+        </div>
     );
 }
