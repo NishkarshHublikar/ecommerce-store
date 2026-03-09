@@ -5,5 +5,5 @@ export default function Cart(){
                 Cart
             </h1>
         </main>
-    )
+    );
 }

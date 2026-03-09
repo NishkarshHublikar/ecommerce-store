@@ -5,5 +5,5 @@ export default function checkout(){
                 Checkout
             </h1>
         </main>
-    )
+    );
 }

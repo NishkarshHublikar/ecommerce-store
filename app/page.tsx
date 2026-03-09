@@ -5,5 +5,5 @@ export default function Home(){
         My E-commerce store
       </h1>
     </main>
-  )
+  );
 }

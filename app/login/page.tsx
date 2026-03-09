@@ -5,5 +5,5 @@ export default function Login(){
                 Login
             </h1>
         </main>
-    )
+    );
 }

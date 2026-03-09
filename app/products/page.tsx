@@ -5,5 +5,5 @@ export default function Products(){
                 Products
             </h1>
         </main>
-    )
+    );
 }
