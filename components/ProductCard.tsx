@@ -1,10 +1,13 @@
+import Link from "next/link";
 type ProductCardProps={
+    id : number;
     name : string;
     price : number;
     image : string;
 }
-export default function ProductCard({name,price, image}: ProductCardProps) {
+export default function ProductCard({id, name, price, image}: ProductCardProps) {
   return (
+    <Link href={`/products/${id}`}>
     <div className="border rounded-lg overflow-hidden shadow-sm hover:shadow-lg transition duration-300">
       {/* Product Image */}
       <img
@@ -30,5 +33,6 @@ export default function ProductCard({name,price, image}: ProductCardProps) {
       </div>
 
     </div>
+    </Link>
   );
 }
