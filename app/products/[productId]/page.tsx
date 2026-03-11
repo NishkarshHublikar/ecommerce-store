@@ -1,6 +1,7 @@
 import { prisma } from "@/lib/prisma";
 import { notFound } from "next/navigation";
 import { addToCart } from "@/app/actions/cart";
+import AddToCartButton from "@/components/AddToCartButton";
 
 type Props = {
   params: Promise<{
@@ -32,14 +33,7 @@ export default async function ProductDetailPage({ params }: Props) {
         <p className="text-xl text-gray-600 mb-6">
           ${product.price}
         </p>
-        <form action={async () => {
-          "use server";
-          await addToCart(product.id);
-        }}>
-        <button className="bg-black text-white px-6 py-3 rounded hover:bg-gray-800">
-          Add to Cart
-        </button>
-        </form>
+        <AddToCartButton productId={product.id} action={addToCart} />
       </div>
     </div>
   );

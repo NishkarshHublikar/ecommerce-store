@@ -1,4 +1,8 @@
 import { prisma } from "@/lib/prisma";
+import { removeFromCart } from "@/app/actions/cart";
+import RemoveFromCartButton from "@/components/RemoveFromCartButton";
+import { updateCartQuantity } from "@/app/actions/cart";
+import CartQuantityButton from "@/components/CartQuantityButton";
 
 export default async function CartPage() {
 
@@ -21,8 +25,13 @@ export default async function CartPage() {
     );
   }
 
+  const total = cart.items.reduce((sum, item) => {
+    return sum + item.product.price * item.quantity;
+  }, 0);
+
   return (
     <div className="p-10">
+
       <h1 className="text-3xl font-bold mb-8">Your Cart</h1>
 
       <div className="space-y-6">
@@ -40,24 +49,37 @@ export default async function CartPage() {
             />
 
             <div className="flex-1">
+
               <h2 className="font-semibold">{item.product.name}</h2>
 
               <p className="text-gray-500">
                 ${item.product.price}
               </p>
 
-              <p className="text-sm mt-1">
-                Quantity: {item.quantity}
-              </p>
+              <CartQuantityButton
+                id={item.id}
+                quantity={item.quantity}
+                action={updateCartQuantity}
+              />
+
             </div>
 
             <div className="font-semibold">
               ${item.product.price * item.quantity}
             </div>
 
+            <RemoveFromCartButton
+              id={item.id}
+              action={removeFromCart}
+            />
+
           </div>
 
         ))}
+      </div>
+
+      <div className="mt-10 text-right text-2xl font-bold">
+        Total: ${total}
       </div>
 
     </div>

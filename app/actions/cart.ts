@@ -1,6 +1,7 @@
 "use server";
 
 import { prisma } from "@/lib/prisma";
+import { revalidatePath } from "next/cache";
 
 export async function addToCart(productId: number) {
 
@@ -40,4 +41,34 @@ export async function addToCart(productId: number) {
       }
     });
   }
+}
+export async function removeFromCart(cartItemId: number) {
+
+  await prisma.cartItem.delete({
+    where: { id: cartItemId }
+  });
+
+  revalidatePath("/cart");
+}
+
+export async function updateCartQuantity(
+  cartItemId: number,
+  quantity: number
+) {
+
+  if (quantity <= 0) {
+    await prisma.cartItem.delete({
+      where: { id: cartItemId }
+    });
+
+    revalidatePath("/cart");
+    return;
+  }
+
+  await prisma.cartItem.update({
+    where: { id: cartItemId },
+    data: { quantity }
+  });
+
+  revalidatePath("/cart");
 }
