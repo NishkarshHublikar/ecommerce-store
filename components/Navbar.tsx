@@ -1,4 +1,6 @@
 import Link from "next/link";
+
+<Link href="/cart">Cart</Link>
 export default function Navbar(){
     return(
         <nav className= "flex justify-between p-6 border-b">
