@@ -3,6 +3,7 @@ import { removeFromCart } from "@/app/actions/cart";
 import RemoveFromCartButton from "@/components/RemoveFromCartButton";
 import { updateCartQuantity } from "@/app/actions/cart";
 import CartQuantityButton from "@/components/CartQuantityButton";
+import { checkout } from "@/app/actions/checkout";
 
 export default async function CartPage() {
 
@@ -78,8 +79,18 @@ export default async function CartPage() {
         ))}
       </div>
 
-      <div className="mt-10 text-right text-2xl font-bold">
-        Total: ${total}
+      <div className="mt-10 flex justify-between items-center">
+
+        <div className="text-2xl font-bold">
+          Total: ${total}
+        </div>
+
+        <form action={checkout}>
+          <button className="bg-green-600 text-white px-6 py-3 rounded hover:bg-green-700">
+            Checkout
+          </button>
+        </form>
+
       </div>
 
     </div>
