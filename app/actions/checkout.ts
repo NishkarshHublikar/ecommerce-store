@@ -3,8 +3,15 @@
 import { prisma } from "@/lib/prisma";
 import { stripe } from "@/lib/stripe";
 import { redirect } from "next/navigation";
+import { getServerSession } from "next-auth";
 
 export async function checkout() {
+
+  const authSession = await getServerSession();
+
+  if (!authSession) {
+    throw new Error("Not logged in");
+  }
 
   const cart = await prisma.cart.findFirst({
     include: {
@@ -20,7 +27,7 @@ export async function checkout() {
     throw new Error("Cart empty");
   }
 
-  const session = await stripe.checkout.sessions.create({
+  const stripeSession = await stripe.checkout.sessions.create({
     payment_method_types: ["card"],
 
     line_items: cart.items.map((item) => ({
@@ -38,7 +45,11 @@ export async function checkout() {
 
     success_url: "http://localhost:3000/success",
     cancel_url: "http://localhost:3000/cart",
+
+    metadata: {
+      userEmail: authSession.user?.email || ""
+    }
   });
 
-  redirect(session.url!);
+  redirect(stripeSession.url!);
 }
