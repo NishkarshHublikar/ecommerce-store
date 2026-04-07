@@ -1,13 +1,45 @@
 import { prisma } from "@/lib/prisma";
-import { removeFromCart } from "@/app/actions/cart";
+import { removeFromCart , updateCartQuantity } from "@/app/actions/cart";
 import RemoveFromCartButton from "@/components/RemoveFromCartButton";
-import { updateCartQuantity } from "@/app/actions/cart";
 import CartQuantityButton from "@/components/CartQuantityButton";
 import { checkout } from "@/app/actions/checkout";
+import { getServerSession } from "next-auth";
+import { authOptions } from "@/lib/auth";
 
 export default async function CartPage() {
 
-  const cart = await prisma.cart.findFirst({
+  const session = await getServerSession(authOptions);
+
+  if (!session?.user?.email) {
+    return (
+      <div className="p-10">
+        <h1 className="text-3xl font-bold">Your Cart</h1>
+        <p className="mt-4 text-gray-500">Please login to view your cart.</p>
+      </div>
+    );
+  }
+
+  const user = await prisma.user.upsert({
+    where: { email: session.user.email },
+    update: {},
+    create: {
+      email: session.user.email,
+      name: session.user.name,
+      image: session.user.image
+    }
+  });
+
+  if (!user) {
+    return (
+      <div className="p-10">
+        <h1 className="text-3xl font-bold">Your Cart</h1>
+        <p className="mt-4 text-gray-500">User not found.</p>
+      </div>  
+    );
+  }
+
+  const cart = await prisma.cart.findUnique({
+    where: { userId: user?.id },
     include: {
       items: {
         include: {

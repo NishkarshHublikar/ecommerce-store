@@ -1,39 +1,4 @@
-import { prisma } from "@/lib/prisma";
-
-export default async function SuccessPage() {
-
-  const cart = await prisma.cart.findFirst({
-    include: {
-      items: {
-        include: {
-          product: true
-        }
-      }
-    }
-  });
-
-  if (cart && cart.items.length > 0) {
-
-    const order = await prisma.order.create({
-      data: {
-        items: {
-          create: cart.items.map((item) => ({
-            quantity: item.quantity,
-            price: item.product.price,
-            productId: item.product.id
-          }))
-        }
-      }
-    });
-
-    await prisma.cartItem.deleteMany({
-      where: {
-        cartId: cart.id
-      }
-    });
-
-  }
-
+export default function SuccessPage() {
   return (
     <div className="p-10 text-center">
 
@@ -46,13 +11,12 @@ export default async function SuccessPage() {
       </p>
 
       <a
-        href="/products"
+        href="/orders"
         className="mt-6 inline-block bg-black text-white px-6 py-3 rounded"
       >
-        Continue Shopping
+        View Orders
       </a>
 
     </div>
   );
-
 }

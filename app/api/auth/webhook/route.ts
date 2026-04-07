@@ -17,6 +17,9 @@ export async function POST(req: NextRequest) {
 
     const stripeSession = event.data.object as Stripe.Checkout.Session;
 
+    const userEmail =
+      (stripeSession.metadata as { userEmail?: string })?.userEmail;
+
     const cart = await prisma.cart.findFirst({
       include: {
         items: {
@@ -33,7 +36,7 @@ export async function POST(req: NextRequest) {
 
     const user = await prisma.user.findUnique({
       where: {
-        email: stripeSession.metadata?.userEmail!
+        email: userEmail
       }
     });
 
@@ -51,6 +54,13 @@ export async function POST(req: NextRequest) {
             productId: item.product.id
           }))
         }
+      }
+    });
+
+    // clear cart after purchase
+    await prisma.cartItem.deleteMany({
+      where: {
+        cartId: cart.id
       }
     });
 
